@@ -5,7 +5,7 @@ class Juego < UglyTrivia::Game
   attr_reader :players, :places, :purses, :in_penalty_box,
       :is_getting_out_of_penalty_box, :pop_questions, :science_questions,
       :sports_questions, :rock_questions
-  attr_accessor :current_player
+  attr_accessor :current_player, :in_penalty_box
 end
 
 describe "Juego" do
@@ -55,6 +55,38 @@ describe "Juego" do
       it { expect(game.purses[6]).to eq(0) }
     end  
   end # describe add
+  
+  describe "#was_correctly_answered" do
+    it "jugador fuera del penalty_box" do
+      current_player = game.current_player = 1
+      game.in_penalty_box[current_player] = false
+      game.was_correctly_answered
+      expect(game.purses[current_player]).to eq(1)
+    end
+    
+    it "incrementa current_player en 1 cuando se tienen 3 jugadores y current player es 0" do
+      3.times{|i| game.add("Jugador #{i+1}")}
+      game.current_player = 0
+      expect {
+	game.was_correctly_answered
+      }.to change{ game.current_player }.by 1
+    end
+    
+    it "incrementa current_player en 1 cuando se tienen 3 jugadores y current player es 1" do
+      3.times{|i| game.add("Jugador #{i+1}")}
+      game.current_player = 1
+      expect {
+	game.was_correctly_answered
+      }.to change{ game.current_player }.by 1
+    end
+    
+    it "reinicia current_player a 0 cuando se tienen 3 jugadores y current player es 2" do
+      3.times{|i| game.add("Jugador #{i+1}")}
+      game.current_player = 2
+      game.was_correctly_answered
+      expect(game.current_player).to eq 0
+    end
+  end # describe #was_correctly_answered
   
   describe "#wrong_answer" do
     it "Modificar in_penalty_box de current_player a true " do

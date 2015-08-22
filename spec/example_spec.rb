@@ -23,15 +23,16 @@ describe "Juego" do
       it { expect(game.rock_questions.size).to eq(50) }
   end
   
-  describe "add" do
+  describe "#add" do
     it "agrega a jugador a arreglo players" do
       game.add('Jugador 1')
       expect(game.players).to match_array ['Jugador 1']
     end
 
-    it "agrega a jugador a arreglo players" do
+    it "agrega dos jugadores a arreglo players" do
       game.add('Jugador 1')
-      expect(game.players).to match_array ['Jugador 1']
+      game.add('Jugador 2')
+      expect(game.players).to match_array ['Jugador 1', 'Jugador 2' ]
     end
   end
 end
@@ -57,7 +58,7 @@ describe "UglyTrivia Game" do
     end
   end
   
-  describe "is_playable?" do
+  describe "#is_playable?" do
     it "devuelve false sin jugadores" do
       expect(game.is_playable?).not_to be_true
     end
@@ -81,14 +82,14 @@ describe "UglyTrivia Game" do
     end
   end
   
-  describe "create_rock_question" do
+  describe "#create_rock_question" do
       it 'agrega rock question con indice' do
 	  index = 0
 	  expect(game.create_rock_question(index)).to eq("Rock Question 0")
       end
   end
   
-  describe "wrong_answer" do 
+  describe "#wrong_answer" do 
     it "regresa true" do
       expect(game.wrong_answer).to be_true
     end

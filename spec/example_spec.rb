@@ -2,9 +2,10 @@ require 'spec_helper'
 require 'ugly_trivia/game'
 
 class Juego < UglyTrivia::Game
-  attr_reader :players, :places, :purses, :in_penalty_box, :current_player,
+  attr_reader :players, :places, :purses, :in_penalty_box,
       :is_getting_out_of_penalty_box, :pop_questions, :science_questions,
       :sports_questions, :rock_questions
+  attr_accessor :current_player
 end
 
 describe "Juego" do
@@ -24,17 +25,67 @@ describe "Juego" do
   end
   
   describe "#add" do
-    it "agrega a jugador a arreglo players" do
-      game.add('Jugador 1')
-      expect(game.players).to match_array ['Jugador 1']
-    end
+    context "con un jugador" do
+      before(:each) do
+        game.add('Jugador 1')
+      end
+      it { expect(game.players).to match_array ['Jugador 1'] }
+      it { expect(game.in_penalty_box[1]).to be false }
+      it { expect(game.places[1]).to eq(0) }
+      it { expect(game.purses[1]).to eq(0) }
+    end  
 
-    it "agrega dos jugadores a arreglo players" do
-      game.add('Jugador 1')
-      game.add('Jugador 2')
-      expect(game.players).to match_array ['Jugador 1', 'Jugador 2' ]
+    context "con dos jugadores" do
+      before(:each) do
+        2.times{|i| game.add("Jugador #{i+1}")}
+      end
+      it { expect(game.players).to match_array ['Jugador 1', 'Jugador 2'] }
+      it { expect(game.in_penalty_box[2]).to be false }
+      it { expect(game.places[2]).to eq(0) }
+      it { expect(game.purses[2]).to eq(0) }
+    end  
+    
+    context "con seis jugadores" do
+      before(:each) do
+        6.times{|i| game.add("Jugador #{i+1}")}
+      end
+      it { expect(game.players).to match_array ['Jugador 1', 'Jugador 2', 'Jugador 3', 'Jugador 4', 'Jugador 5', 'Jugador 6'] }
+      it { expect(game.in_penalty_box[6]).to be false }
+      it { expect(game.places[6]).to eq(0) }
+      it { expect(game.purses[6]).to eq(0) }
+    end  
+  end # describe add
+  
+  describe "#wrong_answer" do
+    it "Modificar in_penalty_box de current_player a true " do
+      game.current_player = 1
+      game.wrong_answer
+      expect(game.in_penalty_box[1]).to eq true
     end
-  end
+    
+    it "incrementa current_player en 1 cuando se tienen 3 jugadores y current player es 0" do
+      3.times{|i| game.add("Jugador #{i+1}")}
+      game.current_player = 0
+      expect {
+	game.wrong_answer
+      }.to change{ game.current_player }.by 1
+    end
+    
+    it "incrementa current_player en 1 cuando se tienen 3 jugadores y current player es 1" do
+      3.times{|i| game.add("Jugador #{i+1}")}
+      game.current_player = 1
+      expect {
+	game.wrong_answer
+      }.to change{ game.current_player }.by 1
+    end
+    
+    it "reinicia current_player a 0 cuando se tienen 3 jugadores y current player es 2" do
+      3.times{|i| game.add("Jugador #{i+1}")}
+      game.current_player = 2
+      game.wrong_answer
+      expect(game.current_player).to eq 0
+    end
+  end # describe #wrong_answer
 end
 
 

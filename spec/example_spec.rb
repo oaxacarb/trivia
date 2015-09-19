@@ -3,9 +3,9 @@ require 'ugly_trivia/game'
 
 class Juego < UglyTrivia::Game
   attr_reader :players, :places, :purses, :in_penalty_box,
-      :is_getting_out_of_penalty_box, :pop_questions, :science_questions,
+       :pop_questions, :science_questions,
       :sports_questions, :rock_questions
-  attr_accessor :current_player, :in_penalty_box
+  attr_accessor :current_player, :in_penalty_box, :is_getting_out_of_penalty_box
 end
 
 describe "Juego" do
@@ -57,12 +57,37 @@ describe "Juego" do
   end # describe add
   
   describe "#was_correctly_answered" do
-    it "jugador fuera del penalty_box" do
-      current_player = game.current_player = 1
-      game.in_penalty_box[current_player] = false
-      game.was_correctly_answered
-      expect(game.purses[current_player]).to eq(1)
-    end
+    context 'penalty box' do
+      context 'fuera del penalty box' do
+	it "incrementa purses" do
+	    current_player = game.current_player = 1
+	    game.in_penalty_box[current_player] = false
+	    game.was_correctly_answered
+	    expect(game.purses[current_player]).to eq(1)
+	end
+      end
+      context 'dentro de penalty box' do
+	context 'is_getting_out_of_penalty_box cuando es true' do
+	  it "incrementa purses" do
+	    current_player = game.current_player = 1
+	    game.in_penalty_box[current_player] = true
+	    game.is_getting_out_of_penalty_box = true
+	    game.was_correctly_answered
+	    expect(game.purses[current_player]).to eq(1)
+	  end
+	end # context is_getting_out_of_penalty_box = true
+	
+	context 'is_getting_out_of_penalty_box cuando es falso' do
+	  it "regresa true" do
+	    current_player = game.current_player = 1
+	    game.in_penalty_box[current_player] = true
+	    game.is_getting_out_of_penalty_box = false
+	    result = game.was_correctly_answered
+	    expect(result).to eq(true)
+	  end
+	end
+      end # context dentro del penalty box
+    end # context penalty box
     
     it "incrementa current_player en 1 cuando se tienen 3 jugadores y current player es 0" do
       3.times{|i| game.add("Jugador #{i+1}")}

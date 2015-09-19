@@ -70,10 +70,20 @@ describe "Juego" do
 	    expect(game.purses[current_player]).to eq(1)
 	end
 	context 'did_player_win es true' do
-	  it 'regresa true'
+	  # NOTE: Esta sintaxis es para rspec 3
+	  # before { allow(game).to receive(:did_player_win).and_return(true) }
+	  before { game.stub did_player_win: true }
+	  it 'regresa true' do
+	    result = game.was_correctly_answered
+	    expect(result).to be_true
+	  end
 	end
 	context 'did_player_win es false' do
-	  it 'regresa false'
+	  before { game.stub did_player_win: false }
+	  it 'regresa false' do
+	    result = game.was_correctly_answered
+	    expect(result).to be_false
+	  end
 	end
       end
       context 'dentro de penalty box' do
@@ -83,6 +93,21 @@ describe "Juego" do
 	  it "incrementa purses" do
 	    game.was_correctly_answered
 	    expect(game.purses[current_player]).to eq(1)
+	  end
+	  
+	  context 'did_player_win es true' do
+	    before { game.stub did_player_win: true }
+	    it 'regresa true' do
+	      result = game.was_correctly_answered
+	      expect(result).to be_true
+	    end
+	  end
+	  context 'did_player_win es false' do
+	    before { game.stub did_player_win: false }
+	    it 'regresa false' do
+	      result = game.was_correctly_answered
+	      expect(result).to be_false
+	    end
 	  end
 	end # context is_getting_out_of_penalty_box = true
 	

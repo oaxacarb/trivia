@@ -243,6 +243,7 @@ describe "Juego" do
     context "in_penalty_box false" do
       before { game.in_penalty_box[current_player] = false } 
       let(:roll) { 3 }
+      
       context 'cuando places en current_player + roll es menor a 12 mantiene el valor' do
 	it 'valor inicial 8' do
 	  game.places[current_player] = 8
@@ -268,6 +269,11 @@ describe "Juego" do
 	    expect(game.places[current_player]).to eq(2)
 	  end
       end # context
+      
+      it "debe llamar a ask_question" do
+	game.should_receive(:ask_question)
+	game.roll
+      end
     end # context in penalty box = false
   end
 end

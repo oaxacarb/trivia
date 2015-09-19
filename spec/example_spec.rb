@@ -208,11 +208,67 @@ describe "Juego" do
       end
       
       context "parámetro roll es impar" do
+	let(:roll) { 3 }
+	it "is_getting_out_of_penalty_box es true" do
+	  game.roll(roll) 
+	  expect(game.is_getting_out_of_penalty_box).to be_true
+	end
+	context 'cuando places en current_player + roll es menor a 12 mantiene el valor' do
+	  it 'valor inicial 8' do
+	    game.places[current_player] = 8
+	    game.roll(roll)
+	    expect(game.places[current_player]).to eq(11)
+	  end
+	  it 'valor inicial 2' do
+	    game.places[current_player] = 2
+	    game.roll(roll)
+	    expect(game.places[current_player]).to eq(5)
+	  end
+	end # context
+	context 'cuando places en current_player + roll es mayor o igual a 12 le resta 12' do
+	  it 'valor inicial 9' do
+	    game.places[current_player] = 9
+	    game.roll(roll)
+	    expect(game.places[current_player]).to eq(0)
+	  end
+	  
+	  it 'valor inicial 11' do
+	    game.places[current_player] = 11
+	    game.roll(roll)
+	    expect(game.places[current_player]).to eq(2)
+	  end
+	end # context
       end
     end
     context "in_penalty_box false" do
-      before { game.in_penalty_box[current_player] = false} 
-    end
+      before { game.in_penalty_box[current_player] = false } 
+      let(:roll) { 3 }
+      context 'cuando places en current_player + roll es menor a 12 mantiene el valor' do
+	it 'valor inicial 8' do
+	  game.places[current_player] = 8
+	  game.roll(roll)
+	  expect(game.places[current_player]).to eq(11)
+	end
+	it 'valor inicial 2' do
+	  game.places[current_player] = 2
+	  game.roll(roll)
+	  expect(game.places[current_player]).to eq(5)
+	end
+      end # context
+      context 'cuando places en current_player + roll es mayor o igual a 12 le resta 12' do
+	it 'valor inicial 9' do
+	  game.places[current_player] = 9
+	  game.roll(roll)
+	  expect(game.places[current_player]).to eq(0)
+	end
+	
+	it 'valor inicial 11' do
+	  game.places[current_player] = 11
+	    game.roll(roll)
+	    expect(game.places[current_player]).to eq(2)
+	  end
+      end # context
+    end # context in penalty box = false
   end
 end
 

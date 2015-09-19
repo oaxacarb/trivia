@@ -69,6 +69,12 @@ describe "Juego" do
 	    game.was_correctly_answered
 	    expect(game.purses[current_player]).to eq(1)
 	end
+	context 'did_player_win es true' do
+	  it 'regresa true'
+	end
+	context 'did_player_win es false' do
+	  it 'regresa false'
+	end
       end
       context 'dentro de penalty box' do
 	before { game.in_penalty_box[current_player] = true } 
@@ -146,6 +152,22 @@ describe "Juego" do
   end # describe #wrong_answer
   
   describe "#did_player_win" do
+    let(:current_player) { game.current_player = 1 }
+    it 'Cuando purses en la posición current_player es menor a 6 regresa true' do
+	game.purses[current_player] = 1
+        result = game.did_player_win
+	expect(result).to eq(true)
+    end
+    it 'Cuando purses en la posición current_player es igual a 6 regresa false' do
+        game.purses[current_player] = 6
+        result = game.did_player_win
+	expect(result).to eq(false)
+    end
+    it 'Cuando purses en la posición current_player es mayor a 6 regresa true' do
+        game.purses[current_player] = 7
+        result = game.did_player_win
+	expect(result).to eq(true)
+    end
   end
 end
 

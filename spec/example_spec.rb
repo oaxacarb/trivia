@@ -6,6 +6,10 @@ class Juego < UglyTrivia::Game
        :pop_questions, :science_questions,
       :sports_questions, :rock_questions
   attr_accessor :current_player, :in_penalty_box, :is_getting_out_of_penalty_box
+  
+  def did_player_win
+    super 
+  end
 end
 
 describe "Juego" do
@@ -58,30 +62,27 @@ describe "Juego" do
   
   describe "#was_correctly_answered" do
     context 'penalty box' do
+      let(:current_player) { game.current_player = 1 }
       context 'fuera del penalty box' do
+	before { game.in_penalty_box[current_player] = false } 
 	it "incrementa purses" do
-	    current_player = game.current_player = 1
-	    game.in_penalty_box[current_player] = false
 	    game.was_correctly_answered
 	    expect(game.purses[current_player]).to eq(1)
 	end
       end
       context 'dentro de penalty box' do
+	before { game.in_penalty_box[current_player] = true } 
 	context 'is_getting_out_of_penalty_box cuando es true' do
+	  before { game.is_getting_out_of_penalty_box = true }
 	  it "incrementa purses" do
-	    current_player = game.current_player = 1
-	    game.in_penalty_box[current_player] = true
-	    game.is_getting_out_of_penalty_box = true
 	    game.was_correctly_answered
 	    expect(game.purses[current_player]).to eq(1)
 	  end
 	end # context is_getting_out_of_penalty_box = true
 	
 	context 'is_getting_out_of_penalty_box cuando es falso' do
+	  before { game.is_getting_out_of_penalty_box = false }
 	  it "regresa true" do
-	    current_player = game.current_player = 1
-	    game.in_penalty_box[current_player] = true
-	    game.is_getting_out_of_penalty_box = false
 	    result = game.was_correctly_answered
 	    expect(result).to eq(true)
 	  end
@@ -143,6 +144,9 @@ describe "Juego" do
       expect(game.current_player).to eq 0
     end
   end # describe #wrong_answer
+  
+  describe "#did_player_win" do
+  end
 end
 
 

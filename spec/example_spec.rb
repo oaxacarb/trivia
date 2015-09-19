@@ -10,6 +10,10 @@ class Juego < UglyTrivia::Game
   def did_player_win
     super 
   end
+  
+  def ask_question
+    super
+  end
 end
 
 describe "Juego" do
@@ -238,7 +242,12 @@ describe "Juego" do
 	    expect(game.places[current_player]).to eq(2)
 	  end
 	end # context
-      end
+	
+	it "debe llamar a ask_question" do
+	  game.should_receive(:ask_question).exactly(:once)
+	  game.roll(roll)
+	end
+      end # context parámetro impar
     end
     context "in_penalty_box false" do
       before { game.in_penalty_box[current_player] = false } 
@@ -271,11 +280,49 @@ describe "Juego" do
       end # context
       
       it "debe llamar a ask_question" do
-	game.should_receive(:ask_question)
-	game.roll
+	game.should_receive(:ask_question).exactly(:once)
+	game.roll(roll)
       end
     end # context in penalty box = false
-  end
+  end # describe roll
+  
+  describe "#ask_question" do
+    context "cuando current_category es Pop" do
+      it "debe reducir el tamaño de pop_questions en 1" do
+	game.stub current_category: "Pop"
+	expect {
+	  game.ask_question
+	  }.to change{ game.pop_questions.size }.by(-1)
+      end
+    end
+    
+    context "cuando current_category es Science" do
+      it "debe reducir el tamaño de science_questions en 1" do
+	game.stub current_category: "Science"
+	expect {
+	  game.ask_question
+	  }.to change{ game.science_questions.size }.by(-1)
+      end
+    end
+    
+    context "cuando current_category es Sports" do
+      it "debe reducir el tamaño de sports_questions en 1" do
+	game.stub current_category: "Sports"
+	expect {
+	  game.ask_question
+	  }.to change{ game.sports_questions.size }.by(-1)
+      end
+    end
+    
+    context "cuando current_category es Rock" do
+      it "debe reducir el tamaño de rock_questions en 1" do
+	game.stub current_category: "Rock"
+	expect {
+	  game.ask_question
+	  }.to change{ game.rock_questions.size }.by(-1)
+      end
+    end
+  end # describe #ask_question
 end
 
 

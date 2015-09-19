@@ -194,6 +194,26 @@ describe "Juego" do
 	expect(result).to eq(true)
     end
   end
+  
+  describe "#roll" do
+    let(:current_player) { game.current_player = 1 }
+    context "in_penalty_box true" do
+      before { game.in_penalty_box[current_player] = true } 
+      context "parámetro roll es par" do
+	let(:roll) { 2 }
+	it "is_getting_out_of_penalty_box es falso" do
+	  game.roll(roll) 
+	  expect(game.is_getting_out_of_penalty_box).to be_false
+	end
+      end
+      
+      context "parámetro roll es impar" do
+      end
+    end
+    context "in_penalty_box false" do
+      before { game.in_penalty_box[current_player] = false} 
+    end
+  end
 end
 
 

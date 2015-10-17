@@ -7,8 +7,7 @@ module UglyTrivia
       @in_penalty_box = Array.new(6, nil)
       
       @current_player = 0
-      @is_getting_out_of_penalty_box = false
-      
+      @is_getting_out_of_penalty_box = false      
       create_questions
     end
     
@@ -32,16 +31,16 @@ module UglyTrivia
       @players.length
     end
     
-    def roll(roll)
+    def roll(dice_roll)
       puts "#{@players[@current_player]} is the current player"
-      puts "They have rolled a #{roll}"
+      puts "They have rolled a #{dice_roll}"
       
       if @in_penalty_box[@current_player]
-	if roll % 2 != 0
+	if dice_roll % 2 != 0
 	  @is_getting_out_of_penalty_box = true
 	  
 	  puts "#{@players[@current_player]} is getting out of the penalty box"
-	  move_player(roll)
+	  move_player(dice_roll)
 	  puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
 	  puts "The category is #{current_category}"
 	  ask_question
@@ -50,7 +49,7 @@ module UglyTrivia
 	  @is_getting_out_of_penalty_box = false
 	end
       else
-        move_player(roll)
+        move_player(dice_roll)
 	puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
 	puts "The category is #{current_category}"
 	ask_question

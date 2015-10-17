@@ -36,7 +36,7 @@ module UglyTrivia
       puts "They have rolled a #{dice_roll}"
       
       if @in_penalty_box[@current_player]
-	if dice_roll % 2 != 0
+	if dice_roll.odd?
 	  @is_getting_out_of_penalty_box = true
 	  
 	  puts "#{@players[@current_player]} is getting out of the penalty box"
@@ -60,7 +60,7 @@ module UglyTrivia
       if @in_penalty_box[@current_player]
 	if @is_getting_out_of_penalty_box
 	  puts 'Answer was correct!!!!'
-	  @purses[@current_player] += 1
+	  increase_score
 	  puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
 	  winner = did_player_win()
 	  next_player
@@ -71,7 +71,7 @@ module UglyTrivia
 	end
       else
 	puts "Answer was corrent!!!!"
-	@purses[@current_player] += 1
+	increase_score
 	puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
 	winner = did_player_win
 	next_player
@@ -88,10 +88,14 @@ module UglyTrivia
     end
     
     private
-   
+
+    def increase_score
+      @purses[@current_player] += 1
+    end
+
     def move_player(roll)
       @places[@current_player] += roll
-      @places[@current_player] -= 12 if @places[@current_player] > 11
+      @places[@current_player] -= 12 if current_place > 11
     end
     
     def next_player
@@ -107,10 +111,14 @@ module UglyTrivia
     end
     
     def current_category
-      return 'Pop' if [0, 4, 8].member? @places[@current_player]
-      return 'Science' if [1, 5, 9].member? @places[@current_player]
-      return 'Sports' if [2, 6, 10].member? @places[@current_player]
+      return 'Pop' if [0, 4, 8].member? current_place
+      return 'Science' if [1, 5, 9].member? current_place
+      return 'Sports' if [2, 6, 10].member? current_place
       return 'Rock'
+    end
+    
+    def current_place
+      @places[@current_player]
     end
     
     def did_player_win

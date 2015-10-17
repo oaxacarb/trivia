@@ -87,15 +87,9 @@ module UglyTrivia
     end
 
     def current_category
-      return 'Pop' if @places[@current_player] == 0
-      return 'Pop' if @places[@current_player] == 4
-      return 'Pop' if @places[@current_player] == 8
-      return 'Science' if @places[@current_player] == 1
-      return 'Science' if @places[@current_player] == 5
-      return 'Science' if @places[@current_player] == 9
-      return 'Sports' if @places[@current_player] == 2
-      return 'Sports' if @places[@current_player] == 6
-      return 'Sports' if @places[@current_player] == 10
+      return 'Pop' if [0, 4, 8].member? @places[@current_player]
+      return 'Science' if [1, 5, 9].member? @places[@current_player]
+      return 'Sports' if [2, 6, 10].member? @places[@current_player]
       return 'Rock'
     end
 

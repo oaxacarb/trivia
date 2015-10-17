@@ -14,6 +14,8 @@ class Juego < UglyTrivia::Game
   def ask_question
     super
   end
+  
+  public :current_category
 end
 
 describe "Juego" do
@@ -323,6 +325,42 @@ describe "Juego" do
       end
     end
   end # describe #ask_question
+  
+  describe "#current_category" do
+    let(:current_player) { 0 }
+    
+    it "regresa Pop cuando el jugador actual está en la casilla 0, 4 u 8" do
+      game.stub current_player: current_player
+      [0, 4, 8].each do |i|
+	game.places[current_player] = i
+	expect(game.current_category).to eq("Pop")
+      end
+    end
+    
+    it "regresa Science cuando el jugador actual está en la casilla 1, 5 o 9" do
+      game.stub current_player: current_player
+      [1, 5, 9].each do |i|
+	game.places[current_player] = i
+	expect(game.current_category).to eq("Science")
+      end
+    end
+    
+    it "regresa Sports cuando el jugador actual está en la casilla 2, 6 o 10" do
+      game.stub current_player: current_player
+      [2, 6, 10].each do |i|
+	game.places[current_player] = i
+	expect(game.current_category).to eq("Sports")
+      end
+    end
+    
+    it "regresa Rock en cualquier otro caso" do
+      game.stub current_player: current_player
+      [3, 7, 11].each do |i|
+	game.places[current_player] = i
+	expect(game.current_category).to eq("Rock")
+      end
+    end
+  end
 end
 
 

@@ -408,13 +408,6 @@ describe "UglyTrivia Game" do
     end
   end
   
-  describe "#create_rock_question" do
-      it 'agrega rock question con indice' do
-	  index = 0
-	  expect(game.create_rock_question(index)).to eq("Rock Question 0")
-      end
-  end
-  
   describe "#wrong_answer" do 
     it "regresa true" do
       expect(game.wrong_answer).to be_true

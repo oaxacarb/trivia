@@ -67,26 +67,19 @@ module UglyTrivia
 	  puts 'Answer was correct!!!!'
 	  @purses[@current_player] += 1
 	  puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
-	  
 	  winner = did_player_win()
-	  @current_player += 1
-	  @current_player = 0 if @current_player == @players.length
-	  
+	  next_player
 	  winner
 	else
-	  @current_player += 1
-	  @current_player = 0 if @current_player == @players.length
+	  next_player 
 	  true
 	end
       else
 	puts "Answer was corrent!!!!"
 	@purses[@current_player] += 1
 	puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
-	
 	winner = did_player_win
-	@current_player += 1
-	@current_player = 0 if @current_player == @players.length
-	
+	next_player
 	winner
       end
     end
@@ -95,13 +88,16 @@ module UglyTrivia
       puts 'Question was incorrectly answered'
       puts "#{@players[@current_player]} was sent to the penalty box"
       @in_penalty_box[@current_player] = true
-      
-      @current_player += 1
-      @current_player = 0 if @current_player == @players.length
+      next_player 
       true
     end
     
     private
+    
+    def next_player
+      @current_player += 1
+      @current_player = 0 if @current_player == @players.length
+    end
     
     def ask_question
       puts @pop_questions.shift if current_category == 'Pop'

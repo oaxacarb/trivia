@@ -59,23 +59,13 @@ module UglyTrivia
     def was_correctly_answered
       if @in_penalty_box[@current_player]
 	if @is_getting_out_of_penalty_box
-	  puts 'Answer was correct!!!!'
-	  increase_score
-	  puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
-	  winner = did_player_win()
-	  next_player
-	  winner
+	  answer_was_correct	  
 	else
 	  next_player 
 	  true
 	end
       else
-	puts "Answer was corrent!!!!"
-	increase_score
-	puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
-	winner = did_player_win
-	next_player
-	winner
+	answer_was_correct
       end
     end
     
@@ -83,11 +73,20 @@ module UglyTrivia
       puts 'Question was incorrectly answered'
       puts "#{@players[@current_player]} was sent to the penalty box"
       @in_penalty_box[@current_player] = true
-      next_player 
+      next_player
       true
     end
     
     private
+
+    def answer_was_correct
+	puts "Answer was correct!!!!"
+	increase_score
+	puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
+	winner = did_player_win()
+	next_player
+	winner
+    end
 
     def increase_score
       @purses[@current_player] += 1
@@ -138,5 +137,6 @@ module UglyTrivia
 	@rock_questions.push "Rock Question #{i}"
       end
     end # create_questions
+
   end
 end

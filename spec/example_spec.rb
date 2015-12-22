@@ -4,15 +4,25 @@ require 'ugly_trivia/game'
 class Juego < UglyTrivia::Game
   attr_reader :players, :places, :purses, :in_penalty_box,
        :pop_questions, :science_questions,
-      :sports_questions, :rock_questions
+      :sports_questions, :rock_questions, :buffer
   attr_accessor :current_player, :in_penalty_box, :is_getting_out_of_penalty_box
   
   def did_player_win
-    super 
+    super
   end
   
   def ask_question
     super
+  end
+
+  def puts(str)
+    @buffer ||= ""
+    @buffer << str
+    Kernel.puts str 
+  end
+
+  def test_puts(str)
+    puts(str)
   end
   
   public :current_category
@@ -20,6 +30,13 @@ end
 
 describe "Juego" do
   let(:game) { Juego.new }
+
+  describe "#puts" do
+    it 'stores the system output' do
+       game.test_puts "MyTest"
+       expect(game.buffer).to include("MyTest")
+    end
+  end
   
   describe "constructor" do
       it { expect(game.players).to eq([]) }     
@@ -53,6 +70,28 @@ describe "Juego" do
       it { expect(game.in_penalty_box[2]).to be false }
       it { expect(game.places[2]).to eq(0) }
       it { expect(game.purses[2]).to eq(0) }
+
+      context "system output" do
+        it "player was added" do
+          game.add('Jugador 1')
+          expect(game.buffer).to include("Jugador 1 was added")
+        end
+	
+	context "Indicates the number of players" do
+          it 'For one player' do 
+            game.add('Jugador 1')
+            expect(game.buffer).to include("They are player number 1")
+	  end
+	  it 'For two players' do 
+            game.add('Jugador 1')
+            game.add('Jugador 2')
+            expect(game.buffer).to include("They are player number 1")
+            expect(game.buffer).to include("They are player number 2")	  
+	  end
+        end
+
+      end
+
     end  
     
     context "con seis jugadores" do
@@ -71,10 +110,17 @@ describe "Juego" do
       let(:current_player) { game.current_player = 1 }
       context 'fuera del penalty box' do
 	before { game.in_penalty_box[current_player] = false } 
+
+        it "system output" do
+           game.was_correctly_answered 
+           expect(game.buffer).to include("Answer was correct!!!!")
+        end
+
 	it "incrementa purses" do
 	    game.was_correctly_answered
 	    expect(game.purses[current_player]).to eq(1)
 	end
+
 	context 'did_player_win es true' do
 	  # NOTE: Esta sintaxis es para rspec 3
 	  # before { allow(game).to receive(:did_player_win).and_return(true) }
@@ -84,6 +130,7 @@ describe "Juego" do
 	    expect(result).to be_true
 	  end
 	end
+
 	context 'did_player_win es false' do
 	  before { game.stub did_player_win: false }
 	  it 'regresa false' do
@@ -92,10 +139,25 @@ describe "Juego" do
 	  end
 	end
       end
+
       context 'dentro de penalty box' do
 	before { game.in_penalty_box[current_player] = true } 
-	context 'is_getting_out_of_penalty_box cuando es true' do
+
+  	context 'is_getting_out_of_penalty_box cuando es true' do
 	  before { game.is_getting_out_of_penalty_box = true }
+
+          context "system output" do
+           it "Answer was correct" do
+             game.was_correctly_answered 
+             expect(game.buffer).to include("Answer was correct!!!!")
+           end
+    
+           it "now has 1 Gold Coins." do
+             game.was_correctly_answered 
+             expect(game.buffer).to include("now has 1 Gold Coins.")
+           end
+          end
+
 	  it "incrementa purses" do
 	    game.was_correctly_answered
 	    expect(game.purses[current_player]).to eq(1)
@@ -107,7 +169,13 @@ describe "Juego" do
 	      result = game.was_correctly_answered
 	      expect(result).to be_true
 	    end
+
+           it "now has 1 Gold Coins." do
+             game.was_correctly_answered 
+             expect(game.buffer).to include("now has 1 Gold Coins.")
+           end
 	  end
+
 	  context 'did_player_win es false' do
 	    before { game.stub did_player_win: false }
 	    it 'regresa false' do
@@ -126,7 +194,7 @@ describe "Juego" do
 	end
       end # context dentro del penalty box
     end # context penalty box
-    
+
     it "incrementa current_player en 1 cuando se tienen 3 jugadores y current player es 0" do
       3.times{|i| game.add("Jugador #{i+1}")}
       game.current_player = 0
@@ -152,6 +220,17 @@ describe "Juego" do
   end # describe #was_correctly_answered
   
   describe "#wrong_answer" do
+
+    it "puts Question was incorrectly answered" do
+	game.wrong_answer
+	expect(game.buffer).to include("Question was incorrectly answered")
+    end
+   
+    it "was sent to the penalty box" do
+       game.wrong_answer
+       expect(game.buffer).to include("was sent to the penalty box")
+    end    
+
     it "Modificar in_penalty_box de current_player a true " do
       game.current_player = 1
       game.wrong_answer
@@ -204,7 +283,29 @@ describe "Juego" do
   describe "#roll" do
     let(:current_player) { game.current_player = 1 }
     context "in_penalty_box true" do
-      before { game.in_penalty_box[current_player] = true } 
+      before { game.in_penalty_box[current_player] = true }
+
+	context 'system output' do 
+          it 'They have rolled a' do 
+     	    game.roll(2)
+	    expect(game.buffer).to include('They have rolled a 2')
+          end
+	
+          context 'is the current player' do
+     	    it 'is the current player' do 
+     	      game.roll(1)
+	      expect(game.buffer).to include('is the current player')
+            end
+         
+	    it 'jugador 1  is the current player' do
+              game.current_player = 0 
+     	      game.add('jugador 1')
+              game.roll(1)
+	      expect(game.buffer).to include('jugador 1 is the current player')
+            end
+          end
+	end
+
       context "parámetro roll es par" do
 	let(:roll) { 2 }
 	it "is_getting_out_of_penalty_box es falso" do
@@ -250,7 +351,10 @@ describe "Juego" do
 	  game.roll(roll)
 	end
       end # context parámetro impar
+
+      
     end
+
     context "in_penalty_box false" do
       before { game.in_penalty_box[current_player] = false } 
       let(:roll) { 3 }
@@ -267,6 +371,7 @@ describe "Juego" do
 	  expect(game.places[current_player]).to eq(5)
 	end
       end # context
+
       context 'cuando places en current_player + roll es mayor o igual a 12 le resta 12' do
 	it 'valor inicial 9' do
 	  game.places[current_player] = 9
@@ -362,7 +467,6 @@ describe "Juego" do
     end
   end
 end
-
 
 describe "UglyTrivia Game" do
   let(:game) { UglyTrivia::Game.new }

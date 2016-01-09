@@ -2,7 +2,7 @@ module UglyTrivia
   class Game
     def  initialize
       @players = []
-      @places = Array.new(6, 0)
+      @places = Places.new(Array.new(6, 0))
       @purses = Array.new(6, 0)
       @in_penalty_box = Array.new(6, nil)
       
@@ -17,7 +17,7 @@ module UglyTrivia
     
     def add(player_name)
       @players.push player_name
-      @places[how_many_players] = 0
+      @places.places[how_many_players] = 0
       @purses[how_many_players] = 0
       @in_penalty_box[how_many_players] = false
       
@@ -36,36 +36,36 @@ module UglyTrivia
       puts "They have rolled a #{dice_roll}"
       
       if @in_penalty_box[@current_player]
-	if dice_roll.odd?
-	  @is_getting_out_of_penalty_box = true
-	  
-	  puts "#{@players[@current_player]} is getting out of the penalty box"
-	  move_player(dice_roll)
-	  puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
-	  puts "The category is #{current_category}"
-	  ask_question
-	else
-	  puts "#{@players[@current_player]} is not getting out of the penalty box"
-	  @is_getting_out_of_penalty_box = false
-	end
+	      if dice_roll.odd?
+	        @is_getting_out_of_penalty_box = true
+	        
+	        puts "#{@players[@current_player]} is getting out of the penalty box"
+	        move_player(dice_roll)
+	        puts "#{@players[@current_player]}'s new location is #{current_place}"
+	        puts "The category is #{current_category}"
+	        ask_question
+	      else
+	        puts "#{@players[@current_player]} is not getting out of the penalty box"
+	        @is_getting_out_of_penalty_box = false
+	      end
       else
         move_player(dice_roll)
-	puts "#{@players[@current_player]}'s new location is #{@places[@current_player]}"
-	puts "The category is #{current_category}"
-	ask_question
+	      puts "#{@players[@current_player]}'s new location is #{current_place}"
+	      puts "The category is #{current_category}"
+	      ask_question
       end
     end
     
     def was_correctly_answered
       if @in_penalty_box[@current_player]
-	if @is_getting_out_of_penalty_box
-	  answer_was_correct	  
-	else
-	  next_player 
-	  true
-	end
+      	if @is_getting_out_of_penalty_box
+	        answer_was_correct	  
+	      else
+	        next_player 
+	        true
+	      end
       else
-	answer_was_correct
+	      answer_was_correct
       end
     end
     
@@ -80,12 +80,12 @@ module UglyTrivia
     private
 
     def answer_was_correct
-	puts "Answer was correct!!!!"
-	increase_score
-	puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
-	winner = did_player_win()
-	next_player
-	winner
+	    puts "Answer was correct!!!!"
+	    increase_score
+	    puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
+	    winner = did_player_win()
+	    next_player
+	    winner
     end
 
     def increase_score
@@ -93,8 +93,8 @@ module UglyTrivia
     end
 
     def move_player(roll)
-      @places[@current_player] += roll
-      @places[@current_player] -= 12 if current_place > 11
+      @places.places[@current_player] += roll
+      @places.places[@current_player] -= 12 if current_place > 11
     end
     
     def next_player
@@ -117,7 +117,7 @@ module UglyTrivia
     end
     
     def current_place
-      @places[@current_player]
+      @places.place(@current_player)
     end
     
     def did_player_win
@@ -131,10 +131,10 @@ module UglyTrivia
       @rock_questions = []
       
       50.times do |i|
-	@pop_questions.push "Pop Question #{i}"
-	@science_questions.push "Science Question #{i}"
-	@sports_questions.push "Sports Question #{i}"
-	@rock_questions.push "Rock Question #{i}"
+	      @pop_questions.push "Pop Question #{i}"
+	      @science_questions.push "Science Question #{i}"
+	      @sports_questions.push "Sports Question #{i}"
+	      @rock_questions.push "Rock Question #{i}"
       end
     end # create_questions
 

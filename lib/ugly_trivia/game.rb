@@ -93,8 +93,7 @@ module UglyTrivia
     end
 
     def move_player(roll)
-      @board.places[@current_player] += roll
-      @board.places[@current_player] -= 12 if current_place > 11
+      @board.move(@current_player, roll)
     end
     
     def next_player

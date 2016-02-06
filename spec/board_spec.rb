@@ -35,7 +35,41 @@ describe "Board" do
   end
 
   describe "#move" do
-    it "" do
+    let(:usuario_actual){ 1 }
+    
+    context "para posicion final menor a 12" do
+        it "mueve al usuario_actual, 5 casillas empezando desde 0" do
+            board = Board.new([1,0,3])
+            board.move(usuario_actual,5)
+            expect(board.place(usuario_actual)).to eq 5
+        end
+        
+        it "mueve al usuario_actual, 2 casillas empezando desde 0" do
+            board = Board.new([1,0,3])
+            board.move(usuario_actual,2)
+            expect(board.place(usuario_actual)).to eq 2
+        end
+        
+        it "mueve al usuario_actual, 3 casillas empezando desde 1" do
+            board = Board.new([1,1,3])
+            board.move(usuario_actual,3)
+            expect(board.place(usuario_actual)).to eq 4
+        end
+
+    end
+    
+    context "para posicion final mayor o igual a 12" do
+        it "mueve al usuario_actual, 1 casilla empezando en 11 regresa a 0" do
+            board = Board.new([1,11,3])
+            board.move(usuario_actual,1)
+            expect(board.place(usuario_actual)).to eq 0
+        end
+        
+        it "mueve al usuario_actual, 2 casillas empezando en 11 regresa a 1" do
+            board = Board.new([1,11,3])
+            board.move(usuario_actual,2)
+            expect(board.place(usuario_actual)).to eq 1
+        end
     end
   end
   

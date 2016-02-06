@@ -8,8 +8,9 @@ class Juego < UglyTrivia::Game
   attr_accessor :current_player, :in_penalty_box, :is_getting_out_of_penalty_box
   
   def places
-    @places.places
+    @board.places
   end
+
   def did_player_win
     super
   end

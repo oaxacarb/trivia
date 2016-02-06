@@ -2,7 +2,7 @@ module UglyTrivia
   class Game
     def  initialize
       @players = []
-      @places = Places.new(Array.new(6, 0))
+      @board = Board.new(Array.new(6, 0))
       @purses = Array.new(6, 0)
       @in_penalty_box = Array.new(6, nil)
       
@@ -17,7 +17,7 @@ module UglyTrivia
     
     def add(player_name)
       @players.push player_name
-      @places.places[how_many_players] = 0
+      @board.places[how_many_players] = 0
       @purses[how_many_players] = 0
       @in_penalty_box[how_many_players] = false
       
@@ -59,7 +59,7 @@ module UglyTrivia
     def was_correctly_answered
       if @in_penalty_box[@current_player]
       	if @is_getting_out_of_penalty_box
-	        answer_was_correct	  
+	        answer_was_correct 
 	      else
 	        next_player 
 	        true
@@ -93,8 +93,8 @@ module UglyTrivia
     end
 
     def move_player(roll)
-      @places.places[@current_player] += roll
-      @places.places[@current_player] -= 12 if current_place > 11
+      @board.places[@current_player] += roll
+      @board.places[@current_player] -= 12 if current_place > 11
     end
     
     def next_player
@@ -117,7 +117,7 @@ module UglyTrivia
     end
     
     def current_place
-      @places.place(@current_player)
+      @board.place(@current_player)
     end
     
     def did_player_win

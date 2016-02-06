@@ -1,5 +1,6 @@
-class Places
+class Board
   attr_reader :places
+
   def initialize(places)
     @places = places
   end
@@ -7,5 +8,4 @@ class Places
   def place(player)
     @places[player] 
   end
-  
 end

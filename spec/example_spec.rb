@@ -49,10 +49,6 @@ describe "Juego" do
     it { expect(game.in_penalty_box).to eq([nil,nil,nil,nil,nil,nil]) }
     it { expect(game.current_player).to eq(0) }
     it { expect(game.is_getting_out_of_penalty_box).to eq(false) }
-    it { expect(game.pop_questions.size).to eq(50) }
-    it { expect(game.science_questions.size).to eq(50) }
-    it { expect(game.sports_questions.size).to eq(50) }
-    it { expect(game.rock_questions.size).to eq(50) }
   end
 
   describe "#add" do
@@ -399,41 +395,7 @@ describe "Juego" do
   end # describe roll
 
   describe "#ask_question" do
-    context "cuando current_category es Pop" do
-      it "debe reducir el tamaño de pop_questions en 1" do
-        game.stub current_category: "Pop"
-        expect {
-          game.ask_question
-        }.to change{ game.pop_questions.size }.by(-1)
-      end
-    end
-
-    context "cuando current_category es Science" do
-      it "debe reducir el tamaño de science_questions en 1" do
-        game.stub current_category: "Science"
-        expect {
-          game.ask_question
-        }.to change{ game.science_questions.size }.by(-1)
-      end
-    end
-
-    context "cuando current_category es Sports" do
-      it "debe reducir el tamaño de sports_questions en 1" do
-        game.stub current_category: "Sports"
-        expect {
-          game.ask_question
-        }.to change{ game.sports_questions.size }.by(-1)
-      end
-    end
-
-    context "cuando current_category es Rock" do
-      it "debe reducir el tamaño de rock_questions en 1" do
-        game.stub current_category: "Rock"
-        expect {
-          game.ask_question
-        }.to change{ game.rock_questions.size }.by(-1)
-      end
-    end
+    it "debe probar la salida del método"
   end # describe #ask_question
 
   describe "#current_category" do

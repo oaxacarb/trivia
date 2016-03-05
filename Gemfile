@@ -4,3 +4,4 @@ source "https://rubygems.org"
 
 gem "minitest"
 gem 'rspec', '~> 2.14', '>= 2.14.1'
+gem 'guard-rspec'

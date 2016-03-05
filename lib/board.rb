@@ -4,6 +4,8 @@ class Board
   def initialize(places)
     @places = places
   end
+  
+  
 
   def place(player)
     @places[player] 

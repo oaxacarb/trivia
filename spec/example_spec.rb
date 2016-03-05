@@ -46,7 +46,7 @@ describe "Juego" do
     it { expect(game.players).to eq([]) }     
     it { expect(game.places).to eq([0,0,0,0,0,0]) }
     it { expect(game.purses).to eq([0,0,0,0,0,0]) }
-    it { expect(game.in_penalty_box).to eq([nil,nil,nil,nil,nil,nil]) }
+    it { expect(game.in_penalty_box).to eq([false,false,false,false,false,false]) }
     it { expect(game.current_player).to eq(0) }
     it { expect(game.is_getting_out_of_penalty_box).to eq(false) }
   end
@@ -351,8 +351,6 @@ describe "Juego" do
           game.roll(roll)
         end
       end # context parámetro impar
-
-
     end
 
     context "in_penalty_box false" do
@@ -365,6 +363,7 @@ describe "Juego" do
           game.roll(roll)
           expect(game.places[current_player]).to eq(11)
         end
+        
         it 'valor inicial 2' do
           game.places[current_player] = 2
           game.roll(roll)
@@ -398,41 +397,6 @@ describe "Juego" do
     it "debe probar la salida del método"
   end # describe #ask_question
 
-  describe "#current_category" do
-    let(:current_player) { 0 }
-
-    it "regresa Pop cuando el jugador actual está en la casilla 0, 4 u 8" do
-      game.stub current_player: current_player
-      [0, 4, 8].each do |i|
-        game.places[current_player] = i
-        expect(game.current_category).to eq("Pop")
-      end
-    end
-
-    it "regresa Science cuando el jugador actual está en la casilla 1, 5 o 9" do
-      game.stub current_player: current_player
-      [1, 5, 9].each do |i|
-        game.places[current_player] = i
-        expect(game.current_category).to eq("Science")
-      end
-    end
-
-    it "regresa Sports cuando el jugador actual está en la casilla 2, 6 o 10" do
-      game.stub current_player: current_player
-      [2, 6, 10].each do |i|
-        game.places[current_player] = i
-        expect(game.current_category).to eq("Sports")
-      end
-    end
-
-    it "regresa Rock en cualquier otro caso" do
-      game.stub current_player: current_player
-      [3, 7, 11].each do |i|
-        game.places[current_player] = i
-        expect(game.current_category).to eq("Rock")
-      end
-    end
-  end
 end
 
 describe "UglyTrivia Game" do

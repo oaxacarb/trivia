@@ -4,7 +4,7 @@ module UglyTrivia
       @players = []
       @board = Board.new(Array.new(6, 0))
       @purses = Array.new(6, 0)
-      @in_penalty_box = Array.new(6, nil)
+      @in_penalty_box = Array.new(6, false)
       
       @current_player = 0
       @is_getting_out_of_penalty_box = false      
@@ -14,7 +14,7 @@ module UglyTrivia
     def is_playable?
       how_many_players >= 2
     end
-    
+
     def add(player_name)
       @players.push player_name
       @board.places[how_many_players] = 0
@@ -106,12 +106,13 @@ module UglyTrivia
     end
     
     def current_category
-      return 'Pop' if [0, 4, 8].member? current_place
-      return 'Science' if [1, 5, 9].member? current_place
-      return 'Sports' if [2, 6, 10].member? current_place
-      return 'Rock'
+      category.current(current_place)
     end
     
+    def category
+      @category ||= Category.new
+    end
+       
     def current_place
       @board.place(@current_player)
     end

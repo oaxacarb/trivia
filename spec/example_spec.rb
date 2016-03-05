@@ -127,7 +127,7 @@ describe "Juego" do
           before { game.stub did_player_win: true }
           it 'regresa true' do
             result = game.was_correctly_answered
-            expect(result).to be_true
+            expect(result).to be true
           end
         end
 
@@ -135,7 +135,7 @@ describe "Juego" do
           before { game.stub did_player_win: false }
           it 'regresa false' do
             result = game.was_correctly_answered
-            expect(result).to be_false
+            expect(result).to be false
           end
         end
       end
@@ -167,7 +167,7 @@ describe "Juego" do
             before { game.stub did_player_win: true }
             it 'regresa true' do
               result = game.was_correctly_answered
-              expect(result).to be_true
+              expect(result).to be true
             end
 
             it "now has 1 Gold Coins." do
@@ -180,7 +180,7 @@ describe "Juego" do
             before { game.stub did_player_win: false }
             it 'regresa false' do
               result = game.was_correctly_answered
-              expect(result).to be_false
+              expect(result).to be false
             end
           end
         end # context is_getting_out_of_penalty_box = true
@@ -310,7 +310,7 @@ describe "Juego" do
         let(:roll) { 2 }
         it "is_getting_out_of_penalty_box es falso" do
           game.roll(roll) 
-          expect(game.is_getting_out_of_penalty_box).to be_false
+          expect(game.is_getting_out_of_penalty_box).to be false
         end
       end
 
@@ -318,7 +318,7 @@ describe "Juego" do
         let(:roll) { 3 }
         it "is_getting_out_of_penalty_box es true" do
           game.roll(roll) 
-          expect(game.is_getting_out_of_penalty_box).to be_true
+          expect(game.is_getting_out_of_penalty_box).to be true
         end
         context 'cuando places en current_player + roll es menor a 12 mantiene el valor' do
           it 'valor inicial 8' do
@@ -444,7 +444,7 @@ describe "UglyTrivia Game" do
     end
 
     it "con un jugador devuelve 1" do
-      expect(game.add('Jugador')).to be_true
+      expect(game.add('Jugador')).to be true
       expect(game.how_many_players).to eq(1)
     end
 
@@ -457,31 +457,31 @@ describe "UglyTrivia Game" do
 
   describe "#is_playable?" do
     it "devuelve false sin jugadores" do
-      expect(game.is_playable?).not_to be_true
+      expect(game.is_playable?).not_to be true
     end
 
     it "devuelve false con menos de 2 jugadores" do
       game.add('Jugador 1')
-      expect(game.is_playable?).not_to be_true
+      expect(game.is_playable?).not_to be true
     end
 
     it "devuelve true con 2 jugadores" do
       game.add('Jugador 1')
       game.add('Jugador 2')
-      expect(game.is_playable?).to be_true
+      expect(game.is_playable?).to be true
     end
 
     it "devuelve true con mas de 2 jugadores" do
       game.add('Jugador 1')
       game.add('Jugador 2')
       game.add('Jugador 3')
-      expect(game.is_playable?).to be_true
+      expect(game.is_playable?).to be true
     end
   end
 
   describe "#wrong_answer" do 
     it "regresa true" do
-      expect(game.wrong_answer).to be_true
+      expect(game.wrong_answer).to be true
     end
   end
 end

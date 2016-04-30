@@ -2,10 +2,10 @@ require 'spec_helper'
 require 'ugly_trivia/game'
 
 class Juego < UglyTrivia::Game
-  attr_reader :players, :purses, :in_penalty_box,
+  attr_reader :players, :purses,
     :pop_questions, :science_questions,
     :sports_questions, :rock_questions, :buffer
-  attr_accessor :current_player, :in_penalty_box, :is_getting_out_of_penalty_box
+  attr_accessor :current_player, :penalty_box, :is_getting_out_of_penalty_box
   
   def places
     @board.places
@@ -46,7 +46,6 @@ describe "Juego" do
     it { expect(game.players).to eq([]) }     
     it { expect(game.places).to eq([0,0,0,0,0,0]) }
     it { expect(game.purses).to eq([0,0,0,0,0,0]) }
-    it { expect(game.in_penalty_box).to eq([false,false,false,false,false,false]) }
     it { expect(game.current_player).to eq(0) }
     it { expect(game.is_getting_out_of_penalty_box).to eq(false) }
   end
@@ -57,7 +56,7 @@ describe "Juego" do
         game.add('Jugador 1')
       end
       it { expect(game.players).to match_array ['Jugador 1'] }
-      it { expect(game.in_penalty_box[1]).to be false }
+      it { expect(game.penalty_box.in_penalty_box?(1)).to be false }
       it { expect(game.places[1]).to eq(0) }
       it { expect(game.purses[1]).to eq(0) }
     end  
@@ -67,7 +66,7 @@ describe "Juego" do
         2.times{|i| game.add("Jugador #{i+1}")}
       end
       it { expect(game.players).to match_array ['Jugador 1', 'Jugador 2'] }
-      it { expect(game.in_penalty_box[2]).to be false }
+      it { expect(game.penalty_box.in_penalty_box?(2)).to be false }
       it { expect(game.places[2]).to eq(0) }
       it { expect(game.purses[2]).to eq(0) }
 
@@ -99,7 +98,7 @@ describe "Juego" do
         6.times{|i| game.add("Jugador #{i+1}")}
       end
       it { expect(game.players).to match_array ['Jugador 1', 'Jugador 2', 'Jugador 3', 'Jugador 4', 'Jugador 5', 'Jugador 6'] }
-      it { expect(game.in_penalty_box[6]).to be false }
+      it { expect(game.penalty_box.in_penalty_box?(6)).to be false }
       it { expect(game.places[6]).to eq(0) }
       it { expect(game.purses[6]).to eq(0) }
     end  
@@ -109,7 +108,7 @@ describe "Juego" do
     context 'penalty box' do
       let(:current_player) { game.current_player = 1 }
       context 'fuera del penalty box' do
-        before { game.in_penalty_box[current_player] = false } 
+        before { game.penalty_box.remove(current_player) } 
 
         it "system output" do
           game.was_correctly_answered 
@@ -141,7 +140,7 @@ describe "Juego" do
       end
 
       context 'dentro de penalty box' do
-        before { game.in_penalty_box[current_player] = true } 
+        before { game.penalty_box.add(current_player) } 
 
         context 'is_getting_out_of_penalty_box cuando es true' do
           before { game.is_getting_out_of_penalty_box = true }
@@ -234,7 +233,7 @@ describe "Juego" do
     it "Modificar in_penalty_box de current_player a true " do
       game.current_player = 1
       game.wrong_answer
-      expect(game.in_penalty_box[1]).to eq true
+      expect(game.penalty_box.in_penalty_box?(1)).to eq true
     end
 
     it "incrementa current_player en 1 cuando se tienen 3 jugadores y current player es 0" do
@@ -283,7 +282,7 @@ describe "Juego" do
   describe "#roll" do
     let(:current_player) { game.current_player = 1 }
     context "in_penalty_box true" do
-      before { game.in_penalty_box[current_player] = true }
+      before { game.penalty_box.add(current_player) }
 
       context 'system output' do 
         it 'They have rolled a' do 
@@ -354,7 +353,7 @@ describe "Juego" do
     end
 
     context "in_penalty_box false" do
-      before { game.in_penalty_box[current_player] = false } 
+      before { game.penalty_box.remove(current_player) } 
       let(:roll) { 3 }
 
       context 'cuando places en current_player + roll es menor a 12 mantiene el valor' do

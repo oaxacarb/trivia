@@ -282,7 +282,7 @@ describe "Juego" do
       before { game.penalty_box.add(current_player) }
 
       context 'system output' do 
-        it 'They have rolled a' do 
+        it 'They have rolled a 2' do 
           game.roll(2)
           expect(game.buffer).to include('They have rolled a 2')
         end
@@ -293,22 +293,32 @@ describe "Juego" do
             expect(game.buffer).to include('is the current player')
           end
 
-          it 'jugador 1  is the current player' do
+          it 'jugador 1 is the current player' do
             game.current_player = 0 
             game.add('jugador 1')
             game.roll(1)
             expect(game.buffer).to include('jugador 1 is the current player')
           end
         end
+
       end
 
       context "parámetro roll es par" do
         let(:roll) { 2 }
 
-        it "getting_out is false" do
+        it "getting_out changes to false" do
           allow(game.penalty_box).to receive(:getting_out=)
           game.roll(roll)
           expect(game.penalty_box).to have_received(:getting_out=).with(false)
+        end
+
+        it 'prints Player 1 is not getting out of the penalty box' do
+          game.current_player = 0 
+          game.add('jugador 1')
+          allow(game.penalty_box).to receive(:in_penalty_box?).and_return(true)
+          game.roll(2)
+          expect(game.buffer).to include('jugador 1 is not getting out of the penalty box')
+
         end
       end
 

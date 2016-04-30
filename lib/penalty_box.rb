@@ -1,4 +1,6 @@
 class PenaltyBox
+  attr_accessor :getting_out
+
   def add(player)
     players << player
   end
@@ -9,6 +11,10 @@ class PenaltyBox
   
   def remove(player)
     players.delete(player)
+  end
+
+  def getting_out?
+    @getting_out
   end
 
   private

@@ -7,7 +7,6 @@ module UglyTrivia
       @penalty_box = PenaltyBox.new 
       
       @current_player = 0
-      @is_getting_out_of_penalty_box = false      
       create_questions
     end
     
@@ -36,7 +35,7 @@ module UglyTrivia
       
       if @penalty_box.in_penalty_box?(@current_player)
 	      if dice_roll.odd?
-	        @is_getting_out_of_penalty_box = true
+                @penalty_box.getting_out = true
 	        
 	        puts "#{@players[@current_player]} is getting out of the penalty box"
 	        move_player(dice_roll)
@@ -45,7 +44,7 @@ module UglyTrivia
 	        ask_question
 	      else
 	        puts "#{@players[@current_player]} is not getting out of the penalty box"
-	        @is_getting_out_of_penalty_box = false
+                @penalty_box.getting_out = false
 	      end
       else
         move_player(dice_roll)
@@ -57,7 +56,7 @@ module UglyTrivia
     
     def was_correctly_answered
       if @penalty_box.in_penalty_box?(@current_player)
-      	if @is_getting_out_of_penalty_box
+        if @penalty_box.getting_out?
 	        answer_was_correct 
 	      else
 	        next_player 

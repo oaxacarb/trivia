@@ -5,7 +5,7 @@ class Juego < UglyTrivia::Game
   attr_reader :players, :purses,
     :pop_questions, :science_questions,
     :sports_questions, :rock_questions, :buffer
-  attr_accessor :current_player, :penalty_box, :is_getting_out_of_penalty_box
+  attr_accessor :current_player, :penalty_box
   
   def places
     @board.places
@@ -47,7 +47,7 @@ describe "Juego" do
     it { expect(game.places).to eq([0,0,0,0,0,0]) }
     it { expect(game.purses).to eq([0,0,0,0,0,0]) }
     it { expect(game.current_player).to eq(0) }
-    it { expect(game.is_getting_out_of_penalty_box).to eq(false) }
+    it { expect(game.penalty_box.getting_out?).to be_falsey }
   end
 
   describe "#add" do
@@ -56,7 +56,6 @@ describe "Juego" do
         game.add('Jugador 1')
       end
       it { expect(game.players).to match_array ['Jugador 1'] }
-      it { expect(game.penalty_box.in_penalty_box?(1)).to be false }
       it { expect(game.places[1]).to eq(0) }
       it { expect(game.purses[1]).to eq(0) }
     end  
@@ -66,7 +65,6 @@ describe "Juego" do
         2.times{|i| game.add("Jugador #{i+1}")}
       end
       it { expect(game.players).to match_array ['Jugador 1', 'Jugador 2'] }
-      it { expect(game.penalty_box.in_penalty_box?(2)).to be false }
       it { expect(game.places[2]).to eq(0) }
       it { expect(game.purses[2]).to eq(0) }
 
@@ -98,7 +96,6 @@ describe "Juego" do
         6.times{|i| game.add("Jugador #{i+1}")}
       end
       it { expect(game.players).to match_array ['Jugador 1', 'Jugador 2', 'Jugador 3', 'Jugador 4', 'Jugador 5', 'Jugador 6'] }
-      it { expect(game.penalty_box.in_penalty_box?(6)).to be false }
       it { expect(game.places[6]).to eq(0) }
       it { expect(game.purses[6]).to eq(0) }
     end  
@@ -142,8 +139,8 @@ describe "Juego" do
       context 'dentro de penalty box' do
         before { game.penalty_box.add(current_player) } 
 
-        context 'is_getting_out_of_penalty_box cuando es true' do
-          before { game.is_getting_out_of_penalty_box = true }
+        context 'when getting_out of penalty_box is true ' do
+          before { game.penalty_box.getting_out = true }
 
           context "system output" do
             it "Answer was correct" do
@@ -184,8 +181,8 @@ describe "Juego" do
           end
         end # context is_getting_out_of_penalty_box = true
 
-        context 'is_getting_out_of_penalty_box cuando es falso' do
-          before { game.is_getting_out_of_penalty_box = false }
+        context 'when getting_out of penalty_box is false ' do
+          before { game.penalty_box.getting_out = false }
           it "regresa true" do
             result = game.was_correctly_answered
             expect(result).to eq(true)
@@ -307,30 +304,37 @@ describe "Juego" do
 
       context "parámetro roll es par" do
         let(:roll) { 2 }
-        it "is_getting_out_of_penalty_box es falso" do
-          game.roll(roll) 
-          expect(game.is_getting_out_of_penalty_box).to be false
+
+        it "getting_out is false" do
+          allow(game.penalty_box).to receive(:getting_out=)
+          game.roll(roll)
+          expect(game.penalty_box).to have_received(:getting_out=).with(false)
         end
       end
 
       context "parámetro roll es impar" do
         let(:roll) { 3 }
-        it "is_getting_out_of_penalty_box es true" do
-          game.roll(roll) 
-          expect(game.is_getting_out_of_penalty_box).to be true
+
+        it "when getting_out of penalty_box is true" do
+          allow(game.penalty_box).to receive(:getting_out=)
+          game.roll(roll)
+          expect(game.penalty_box).to have_received(:getting_out=).with(true)
         end
+
         context 'cuando places en current_player + roll es menor a 12 mantiene el valor' do
           it 'valor inicial 8' do
             game.places[current_player] = 8
             game.roll(roll)
             expect(game.places[current_player]).to eq(11)
           end
+
           it 'valor inicial 2' do
             game.places[current_player] = 2
             game.roll(roll)
             expect(game.places[current_player]).to eq(5)
           end
         end # context
+
         context 'cuando places en current_player + roll es mayor o igual a 12 le resta 12' do
           it 'valor inicial 9' do
             game.places[current_player] = 9

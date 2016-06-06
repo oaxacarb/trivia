@@ -34,4 +34,18 @@ describe "PenaltyBox" do
       expect(@penalty_box.in_penalty_box?(player)).to be false 
     end
   end
+
+  describe 'getting_out?' do
+     it 'debe ser true cuando se le asigna true' do
+       @penalty_box = PenaltyBox.new
+       @penalty_box.getting_out = true
+       expect(@penalty_box.getting_out?).to be true
+     end
+
+     it 'debe ser false cuando se le asigna false' do
+       @penalty_box = PenaltyBox.new
+       @penalty_box.getting_out = false
+       expect(@penalty_box.getting_out?).to be false
+     end
+  end # describe 'getting_out_of_penalty_box?'
 end

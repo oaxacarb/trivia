@@ -7,7 +7,6 @@ module UglyTrivia
       @penalty_box = PenaltyBox.new 
       
       @current_player = 0
-      @is_getting_out_of_penalty_box = false      
       create_questions
     end
     
@@ -35,36 +34,36 @@ module UglyTrivia
       puts "They have rolled a #{dice_roll}"
       
       if @penalty_box.in_penalty_box?(@current_player)
-	      if dice_roll.odd?
-	        @is_getting_out_of_penalty_box = true
-	        
-	        puts "#{@players[@current_player]} is getting out of the penalty box"
-	        move_player(dice_roll)
-	        puts "#{@players[@current_player]}'s new location is #{current_place}"
-	        puts "The category is #{current_category}"
-	        ask_question
-	      else
-	        puts "#{@players[@current_player]} is not getting out of the penalty box"
-	        @is_getting_out_of_penalty_box = false
-	      end
+        if dice_roll.odd?
+          @penalty_box.getting_out = true
+
+          puts "#{@players[@current_player]} is getting out of the penalty box"
+          move_player(dice_roll)
+          puts "#{@players[@current_player]}'s new location is #{current_place}"
+          puts "The category is #{current_category}"
+          ask_question
+        else
+          puts "#{@players[@current_player]} is not getting out of the penalty box"
+          @penalty_box.getting_out = false
+        end
       else
         move_player(dice_roll)
-	      puts "#{@players[@current_player]}'s new location is #{current_place}"
-	      puts "The category is #{current_category}"
-	      ask_question
+        puts "#{@players[@current_player]}'s new location is #{current_place}"
+        puts "The category is #{current_category}"
+        ask_question
       end
     end
     
     def was_correctly_answered
       if @penalty_box.in_penalty_box?(@current_player)
-      	if @is_getting_out_of_penalty_box
-	        answer_was_correct 
-	      else
-	        next_player 
-	        true
-	      end
+        if @penalty_box.getting_out?
+          answer_was_correct 
+        else
+          next_player 
+          true
+        end
       else
-	      answer_was_correct
+        answer_was_correct
       end
     end
     
@@ -79,12 +78,12 @@ module UglyTrivia
     private
 
     def answer_was_correct
-	    puts "Answer was correct!!!!"
-	    increase_score
-	    puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
-	    winner = did_player_win()
-	    next_player
-	    winner
+      puts "Answer was correct!!!!"
+      increase_score
+      puts "#{@players[@current_player]} now has #{@purses[@current_player]} Gold Coins."
+      winner = did_player_win()
+      next_player
+      winner
     end
 
     def increase_score
